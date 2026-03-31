@@ -7,7 +7,9 @@ typedef struct {
     char nombre[50];
     int presente; 
 } Estudiante;
+
 //ESTA FUNCION MOSTRARA LAS OPCIONES
+
 void mostrarMenu() {
     printf("\n--- SISTEMA DE ASISTENCIA ---");
     printf("\n1. Registrar nuevo estudiante");
@@ -16,7 +18,9 @@ void mostrarMenu() {
     printf("\n4. Salir");
     printf("\nSeleccione una opcion: ");
 }
+
 //AQUI SE REGISTRAN LOS ESTUDIANTES
+
 void registrarEstudiante(Estudiante lista[], int *contador) {
     if (*contador >= 100) {
         printf("\n[!] Error: Lista llena.\n");
@@ -44,7 +48,37 @@ void registrarEstudiante(Estudiante lista[], int *contador) {
     printf("\n[+] Estudiante registrado con exito.\n");
 }
 
+//AQUI SE REGISTRAN LAS ASISITENCIAS
+
+void marcarAsistencia(Estudiante lista[], int contador) {
+    int idBuscar;
+    int encontrado = 0;
+
+    if (contador == 0) {
+        printf("\n[!] No hay estudiantes registrados aun.\n");
+        return;
+    }
+
+    printf("\n--- Marcar Asistencia ---");
+    printf("\nIngrese el ID del estudiante: ");
+    scanf("%d", &idBuscar);
+
+    for (int i = 0; i < contador; i++) {
+        if (lista[i].id == idBuscar) {
+            lista[i].presente = 1;
+            encontrado = 1;
+            printf("\n[OK] Asistencia marcada para: %s\n", lista[i].nombre);
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        printf("\n[!] Estudiante con ID %d no encontrado.\n", idBuscar);
+    }
+}
+
 //AQUI ES DONDE COMIENZA EL CORAZON DEL PROGRAMA, AQUI ESTAN LAS OPCIONES
+
 int main() {
     Estudiante lista[100];
     int totalAlumnos = 0;
@@ -63,7 +97,7 @@ int main() {
                 registrarEstudiante(lista, &totalAlumnos);
                 break;
             case 2:
-                printf("\nProximamente: Marcar asistencia...\n");
+                marcarAsistencia(lista, totalAlumnos);
                 break;
             case 3:
                 printf("Proximamente: Reporte...\n");
