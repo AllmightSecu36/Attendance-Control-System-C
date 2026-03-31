@@ -57,50 +57,40 @@ void registrarEstudiante(Estudiante lista[], int *contador) {
 
     printf("\n--- Registro de Estudiante ---\n");
     printf("Ingrese ID (Solo numeros): ");
-    
     if (scanf("%d", &lista[*contador].id) != 1) {
         printf("[!] ID invalido.\n");
         while(getchar() != '\n'); 
         return;
     }
-    while(getchar() != '\n'); // Limpieza de buffer
+    while(getchar() != '\n'); 
 
     printf("Ingrese Nombre Completo: ");
     fgets(lista[*contador].nombre, 50, stdin);
     lista[*contador].nombre[strcspn(lista[*contador].nombre, "\n")] = 0;
 
-    // Inicializamos la asistencia de todo el mes en 0 (Falta)
-    for(int i = 0; i < 31; i++) {
-        lista[*contador].asistencia[i] = 0;
-    }
-    
-    lista[*contador].activo = 1; // El estudiante nace "Activo"
+    // El estudiante nuevo inicia con 0 clases registradas
+    lista[*contador].totalClases = 0; 
+    lista[*contador].activo = 1; 
     (*contador)++; 
     
     printf("\n[+] Estudiante registrado exitosamente.\n");
 }
 
 void pasarAsistenciaDiaria(Estudiante lista[], int contador) {
-    int dia;
     if (contador == 0) {
         printf("\n[!] No hay estudiantes registrados.\n");
         return;
     }
 
-    printf("\n--- Pase de Lista Diario ---\n");
-    printf("Ingrese el dia del mes (1 al 31): ");
-    
-    if (scanf("%d", &dia) != 1 || dia < 1 || dia > 31) {
-        printf("[!] Dia invalido. Debe ser entre 1 y 31.\n");
-        while(getchar() != '\n');
-        return;
-    }
-    while(getchar() != '\n');
+    char fechaActual[15];
+    printf("\n--- Pase de Lista ---\n");
+    printf("Ingrese la fecha de hoy (Ej: 02/05/2026): ");
+    scanf("%14s", fechaActual);
+    while(getchar() != '\n'); // Limpiar buffer
 
-    printf("\nPasando asistencia para el dia %d...\n", dia);
+    printf("\nPasando asistencia para la fecha: %s\n", fechaActual);
     int hayActivos = 0;
 
-    // Recorremos toda la lista preguntando por cada alumno activo
     for (int i = 0; i < contador; i++) {
         if (lista[i].activo == 1) {
             hayActivos = 1;
@@ -109,18 +99,25 @@ void pasarAsistenciaDiaria(Estudiante lista[], int contador) {
             
             if (scanf("%d", &estado) != 1) {
                 while(getchar() != '\n');
-                estado = 0; // Si el profe teclea mal, cuenta como falta por seguridad
+                estado = 0; 
             }
             
-            // Guardamos en el día correcto (dia-1 porque los arreglos empiezan en 0)
-            lista[i].asistencia[dia - 1] = (estado == 1) ? 1 : 0;
+            // ¿En qué posición del historial lo guardamos? En la que indique totalClases
+            int indiceClase = lista[i].totalClases;
+            
+            // Copiamos la fecha que escribiste al historial del alumno
+            strcpy(lista[i].historial[indiceClase].fecha, fechaActual);
+            lista[i].historial[indiceClase].presente = (estado == 1) ? 1 : 0;
+            
+            // Sumamos 1 al contador de clases de este alumno
+            lista[i].totalClases++;
         }
     }
 
     if (!hayActivos) {
         printf("[!] Todos los estudiantes estan dados de baja.\n");
     } else {
-        printf("\n[OK] Asistencia del dia %d guardada.\n", dia);
+        printf("\n[OK] Asistencia del %s guardada.\n", fechaActual);
     }
 }
 
@@ -149,39 +146,37 @@ void borrarEstudiante(Estudiante lista[], int contador) {
 }
 
 void generarReporteMensual(Estudiante lista[], int contador) {
-    FILE *archivo = fopen("../data/reporte_mensual.txt", "w");
+    FILE *archivo = fopen("../data/reporte_fechas.txt", "w");
     if (archivo == NULL) {
-        printf("\n[!] Error al crear el reporte en data/.\n");
+        printf("\n[!] Error al crear el reporte.\n");
         return;
     }
 
-    fprintf(archivo, "=================================================================================\n");
-    fprintf(archivo, "                           REPORTE DE ASISTENCIA MENSUAL\n");
-    fprintf(archivo, "=================================================================================\n");
+    fprintf(archivo, "========================================================\n");
+    fprintf(archivo, "           REPORTE DE ASISTENCIA POR FECHAS\n");
+    fprintf(archivo, "========================================================\n\n");
     
-    // Encabezado de los días
-    fprintf(archivo, "%-6s | %-20s | ", "ID", "NOMBRE");
-    for(int d = 1; d <= 31; d++) {
-        fprintf(archivo, "%02d ", d); // Imprime 01, 02, 03...
-    }
-    fprintf(archivo, "\n---------------------------------------------------------------------------------\n");
-
+    // Imprimimos el reporte formato Lista por cada alumno
     for (int i = 0; i < contador; i++) {
         if (lista[i].activo == 1) {
-            fprintf(archivo, "%-6d | %-20s | ", lista[i].id, lista[i].nombre);
-            for(int d = 0; d < 31; d++) {
-                // Si es 1 imprime 'P', si es 0 imprime '-'
-                char marca = (lista[i].asistencia[d] == 1) ? 'P' : '-';
-                fprintf(archivo, " %c ", marca);
+            fprintf(archivo, "ALUMNO: %s (ID: %d)\n", lista[i].nombre, lista[i].id);
+            fprintf(archivo, "--------------------------------------------------------\n");
+            
+            if (lista[i].totalClases == 0) {
+                fprintf(archivo, "  Sin registros de asistencia aun.\n");
+            } else {
+                for(int c = 0; c < lista[i].totalClases; c++) {
+                    char *estado = (lista[i].historial[c].presente == 1) ? "PRESENTE" : "FALTA";
+                    fprintf(archivo, "  Fecha: %-12s | Estado: %s\n", lista[i].historial[c].fecha, estado);
+                }
             }
             fprintf(archivo, "\n");
         }
     }
 
     fclose(archivo);
-    printf("\n[OK] Reporte generado exitosamente en: data/reporte_mensual.txt\n");
+    printf("\n[OK] Reporte generado exitosamente en: data/reporte_fechas.txt\n");
 }
-
 // =========================================================
 // FUNCIÓN PRINCIPAL (MAIN)
 // =========================================================

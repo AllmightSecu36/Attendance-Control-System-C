@@ -1,15 +1,28 @@
 #ifndef ASISTENCIA_H
 #define ASISTENCIA_H
 
-// Estructura principal
+//Instrucciones para que no falle nada:
+//Asegúrate de que la carpeta data esté creada y vacía.
+//Compila desde la carpeta src: gcc main.c -o ../bin/asistencia
+//Ejecuta desde la carpeta src: ../bin/asistencia
+//Si haces esto, el programa encontrará la carpeta data/ subiendo un nivel (../) y creará los archivos sin chillar.
+
+// Nueva mini-estructura: Guarda la fecha y el estado de ese día
+typedef struct {
+    char fecha[15]; // Guardará textos como "02/05/2026"
+    int presente;   // 1 = Presente, 0 = Falta
+} RegistroDiario;
+
+// Estructura principal actualizada
 typedef struct {
     int id;
     char nombre[50];
-    int asistencia[31]; // Un espacio para cada día del mes (1 al 31)
-    int activo;         // 1 = Activo, 0 = Borrado
+    RegistroDiario historial[100]; // Capacidad para 100 clases en el semestre
+    int totalClases;               // Cuántas clases ha tenido este alumno
+    int activo;
 } Estudiante;
 
-// Prototipos de funciones
+// Prototipos
 void mostrarMenu();
 void cargarDatos(Estudiante lista[], int *contador);
 void guardarDatos(Estudiante lista[], int contador);
