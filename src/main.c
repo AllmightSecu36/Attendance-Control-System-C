@@ -7,7 +7,6 @@ typedef struct {
     char nombre[50];
     int presente; 
 } Estudiante;
-
 //ESTA FUNCION MOSTRARA LAS OPCIONES
 void mostrarMenu() {
     printf("\n--- SISTEMA DE ASISTENCIA ---");
