@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// Definimos una estructura que sirver para guardar toda la estructura dentro de el Estudiante
 //ESTA SERA LA ETIQUETA DONDE SE REGISTRARAN LOS ESTUDIANTES
 typedef struct { 
     int id;
@@ -11,9 +10,6 @@ typedef struct {
 
 //ESTA FUNCION MOSTRARA LAS OPCIONES
 void mostrarMenu() {
-    printf("\n--- SISTEMA DE CONTROL DE ASISTENCIA ---\n");
-    printf("1. Registrar nuevo estudiante\n");
-    printf("2. Marcar asistencia\n");
     printf("\n--- SISTEMA DE ASISTENCIA ---");
     printf("\n1. Registrar nuevo estudiante");
     printf("\n2. Marcar asistencia");
@@ -68,7 +64,6 @@ int main() {
                 registrarEstudiante(lista, &totalAlumnos);
                 break;
             case 2:
-                break;
                 printf("\nProximamente: Marcar asistencia...\n");
                 break;
             case 4:
