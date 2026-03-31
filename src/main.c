@@ -71,6 +71,9 @@ int main() {
                 break;
                 printf("\nProximamente: Marcar asistencia...\n");
                 break;
+            case 3:
+                printf("Proximamente: Reporte...\n");
+                break;   
             case 4:
                 printf("\nSaliendo...\n");
                 break;
