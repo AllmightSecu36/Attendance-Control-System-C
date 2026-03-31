@@ -9,6 +9,7 @@ typedef struct {
     int presente; 
 } Estudiante;
 
+//ESTA FUNCION MOSTRARA LAS OPCIONES
 void mostrarMenu() {
     printf("\n--- SISTEMA DE CONTROL DE ASISTENCIA ---\n");
     printf("1. Registrar nuevo estudiante\n");
@@ -51,6 +52,7 @@ void registrarEstudiante(Estudiante lista[], int *contador) {
 //AQUI ES DONDE COMIENZA EL CORAZON DEL PROGRAMA, AQUI ESTAN LAS OPCIONES
 int main() {
     Estudiante lista[100];
+    int totalAlumnos = 0;
     int opcion;
 
     do {
