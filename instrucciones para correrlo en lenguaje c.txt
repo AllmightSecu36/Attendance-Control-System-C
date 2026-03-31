@@ -1,0 +1,5 @@
+//Instrucciones para que no falle nada:
+//Asegúrate de que la carpeta data esté creada y vacía.
+//Compila desde la carpeta src: gcc main.c -o ../bin/asistencia
+//Ejecuta desde la carpeta src: ../bin/asistencia
+//Si haces esto, el programa encontrará la carpeta data/ subiendo un nivel (../) y creará los archivos sin chillar.
