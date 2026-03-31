@@ -1,45 +1,79 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 // Definimos una estructura que sirver para guardar toda la estructura dentro de el Estudiante
-typedef struct {
+//ESTA SERA LA ETIQUETA DONDE SE REGISTRARAN LOS ESTUDIANTES
+typedef struct { 
     int id;
     char nombre[50];
-    int presente; // 1 para sí, 0 para no, este booleano es para las asistencias para mas adelante
+    int presente; 
 } Estudiante;
 
 void mostrarMenu() {
     printf("\n--- SISTEMA DE CONTROL DE ASISTENCIA ---\n");
     printf("1. Registrar nuevo estudiante\n");
     printf("2. Marcar asistencia\n");
-    printf("3. Generar reporte (.txt)\n");
-    printf("4. Salir\n");
-    printf("Seleccione una opcion: ");
+    printf("\n--- SISTEMA DE ASISTENCIA ---");
+    printf("\n1. Registrar nuevo estudiante");
+    printf("\n2. Marcar asistencia");
+    printf("\n3. Generar reporte (.txt)");
+    printf("\n4. Salir");
+    printf("\nSeleccione una opcion: ");
+}
+//AQUI SE REGISTRAN LOS ESTUDIANTES
+void registrarEstudiante(Estudiante lista[], int *contador) {
+    if (*contador >= 100) {
+        printf("\n[!] Error: Lista llena.\n");
+        return;
+    }
+
+    printf("\n--- Registro de Estudiante ---\n");
+    
+    printf("Ingrese ID (Solo numeros): ");
+    scanf("%d", &lista[*contador].id);
+
+    // Mientras el buffer tenga algo (como el Enter), lo sacamos uno por uno.
+    while (getchar() != '\n'); 
+
+    printf("Ingrese Nombre Completo: ");
+    
+    fgets(lista[*contador].nombre, 50, stdin);
+    
+    
+    lista[*contador].nombre[strcspn(lista[*contador].nombre, "\n")] = 0;
+
+    lista[*contador].presente = 0; 
+    (*contador)++; 
+    
+    printf("\n[+] Estudiante registrado con exito.\n");
 }
 
+//AQUI ES DONDE COMIENZA EL CORAZON DEL PROGRAMA, AQUI ESTAN LAS OPCIONES
 int main() {
+    Estudiante lista[100];
     int opcion;
-    
+
     do {
         mostrarMenu();
-        scanf("%d", &opcion);
-        
+        if (scanf("%d", &opcion) != 1) {
+            while (getchar() != '\n');
+            printf("\n[!] Use solo numeros.\n");
+            continue;
+        }
+
         switch(opcion) {
             case 1:
-                printf("Proximamente: Registro...\n");
+                registrarEstudiante(lista, &totalAlumnos);
                 break;
             case 2:
-                printf("Proximamente: Asistencia...\n");
                 break;
-            case 3:
-                printf("Proximamente: Reporte...\n");
+                printf("\nProximamente: Marcar asistencia...\n");
                 break;
             case 4:
-                printf("Saliendo del sistema. ¡Buen dia!\n");
+                printf("\nSaliendo...\n");
                 break;
             default:
-                printf("Opcion no valida.\n");
+                printf("\n[!] Opcion invalida.\n");
         }
     } while (opcion != 4);
 
